@@ -6,8 +6,11 @@ import numpy as np
 from python_tsp.exact import solve_tsp_dynamic_programming
 from python_tsp.heuristics import solve_tsp_simulated_annealing
 
+
+#this does not respect the precedence constraints, it only avoids that the nodes are visited immideately in the wrong order
+
 def optimal_tour_length(env):
-    """Use python-tsp library to get an optimal solution."""
+    """Use python-tsp library to get an optimal solution. This might result in illegal solutions because of the precedence constraints."""
     distance_matrix = np.zeros((env.N_GRAPH_SIZE+1, env.N_GRAPH_SIZE+1))
     for i in range(env.N_GRAPH_SIZE):
         for j in range(env.N_GRAPH_SIZE):
