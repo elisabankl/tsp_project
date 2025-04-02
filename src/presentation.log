@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.6.30)  4 MAR 2025 15:52
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.6.30)  3 APR 2025 00:33
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**c:/Users/elisa/OneDrive/Dokumente/Masterarbeit/Reinforcementlearning/tsp-project/src/presentation.tex
-(c:/Users/elisa/OneDrive/Dokumente/Masterarbeit/Reinforcementlearning/tsp-project/src/presentation.tex
+**c:/Users/elisa/OneDrive/Dokumente/Masterarbeit/Reinforcementlearning/tsp_project/src/presentation.tex
+(c:/Users/elisa/OneDrive/Dokumente/Masterarbeit/Reinforcementlearning/tsp_project/src/presentation.tex
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-05-27>
 (C:\Users\elisa\AppData\Local\Programs\MiKTeX\tex/latex/beamer\beamer.cls
@@ -736,6 +736,10 @@ Package pdftex.def Info: reward_trajectory.png  used on input line 84.
 [8
 
 ]
+
+[9
+
+]
 \tf@nav=\write6
 \openout6 = `presentation.nav'.
 
@@ -754,17 +758,17 @@ Package rerunfilecheck Info: File `presentation.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 21502 strings out of 473904
- 418321 string characters out of 5726600
+ 21506 strings out of 473904
+ 418354 string characters out of 5726600
  1939908 words of memory out of 5000000
- 43915 multiletter control sequences out of 15000+600000
+ 43917 multiletter control sequences out of 15000+600000
  569201 words of font info for 76 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  128i,14n,123p,472b,561s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/elisa/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss10.pfb><C:/Users/elisa/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss12.pfb><C:/Users/elisa/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmssbx10.pfb><C:/Users/elisa/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on presentation.pdf (8 pages, 168778 bytes).
+Output written on presentation.pdf (9 pages, 173755 bytes).
 PDF statistics:
- 246 PDF objects out of 1000 (max. 8388607)
- 17 named destinations out of 1000 (max. 500000)
+ 272 PDF objects out of 1000 (max. 8388607)
+ 19 named destinations out of 1000 (max. 500000)
  53 words of extra memory for PDF output out of 10000 (max. 10000000)
 

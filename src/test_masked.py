@@ -24,7 +24,7 @@ def generate_random_solution(env):
     return episode_rewards
 
 # Load the trained Maskable PPO model
-model = MaskablePPO.load("masked_ppo_tsp_non_normalized_25", verbose=0)
+model = MaskablePPO.load("masked_ppo_tsp_reduced_state_rep_25", verbose=0)
 
 # Initialize lists to store rewards for all instances
 all_agent_rewards = []

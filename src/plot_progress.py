@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load the CSV file, skipping metadata lines
-df = pd.read_csv('masked_ppo_eval_non_normalized_monitor.csv', header=None, names=['r', 'l', 't'], comment='#')
+df = pd.read_csv('masked_ppo_tsp_reduced_state_rep_25_eval_monitor.csv', header=None, names=['r', 'l', 't'], comment='#')
 
 # Convert columns to numeric types
 df['r'] = pd.to_numeric(df['r'], errors='coerce')

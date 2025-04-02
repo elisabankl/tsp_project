@@ -17,12 +17,12 @@ def mask_fn(env):
     return env.env.action_masks()
 
 # Create the training environment and wrap it with Monitor and ActionMasker
-env = ActionMasker(Monitor(CustomEnv(25), filename="masked_ppo_25_non_normalized_monitor.csv", allow_early_resets=True,override_existing=False), mask_fn)
+env = ActionMasker(Monitor(CustomEnv(25), filename="masked_ppo_tsp_reduced_state_rep_25_monitor.csv", allow_early_resets=True,override_existing=False), mask_fn)
 #env = DummyVecEnv([lambda: ActionMasker(Monitor(CustomEnv(25), filename="masked_ppo_25_non_normalized_monitor.csv", allow_early_resets=True), mask_fn)])
 #env = VecNormalize(env, norm_obs=True, norm_reward=True)
 
 # Create the evaluation environment and wrap it with Monitor and ActionMasker
-eval_env = ActionMasker(Monitor(CustomEnv(25), filename="masked_ppo_eval_non_normalized_monitor.csv", allow_early_resets=True,override_existing=False), mask_fn)
+eval_env = ActionMasker(Monitor(CustomEnv(25), filename="masked_ppo_tsp_reduced_state_rep_25_eval_monitor.csv", allow_early_resets=True,override_existing=False), mask_fn)
 
 #eval_env = DummyVecEnv([lambda: ActionMasker(Monitor(CustomEnv(25), filename="masked_ppo_eval_non_normalized_monitor.csv", allow_early_resets=True), mask_fn)])
 #eval_env = VecNormalize(eval_env, norm_obs=True, norm_reward=True, training=False)
@@ -34,15 +34,15 @@ eval_callback = MaskableEvalCallback(eval_env, best_model_save_path='./logs_non_
 
 # Load the existing model if it exists, otherwise create a new one
 try:
-    model = MaskablePPO.load("masked_ppo_tsp_non_normalized_25", env=env, verbose=0)
+    model = MaskablePPO.load("masked_ppo_tsp_reduced_state_rep_25", env=env, verbose=0)
     print("Loaded existing model.")
 except FileNotFoundError:
     model = MaskablePPO('MlpPolicy', env, verbose=0)
     print("Created new model.")
 
 # Further train the model
-model.learn(total_timesteps=2000000, callback=eval_callback)
+model.learn(total_timesteps=6000000, callback=eval_callback)
 
 # Save the model and normalization statistics
-model.save("masked_ppo_tsp_non_normalized_25")
+model.save("masked_ppo_tsp_reduced_state_rep_25")
 #env.save("vec_normalize.pkl")

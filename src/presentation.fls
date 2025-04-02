@@ -1,6 +1,6 @@
-PWD c:\Users\elisa\OneDrive\Dokumente\Masterarbeit\Reinforcementlearning\tsp-project\src
+PWD c:\Users\elisa\OneDrive\Dokumente\Masterarbeit\Reinforcementlearning\tsp_project\src
 INPUT C:\Users\elisa\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT c:\Users\elisa\OneDrive\Dokumente\Masterarbeit\Reinforcementlearning\tsp-project\src\presentation.tex
+INPUT c:\Users\elisa\OneDrive\Dokumente\Masterarbeit\Reinforcementlearning\tsp_project\src\presentation.tex
 OUTPUT presentation.log
 INPUT C:\Users\elisa\AppData\Local\Programs\MiKTeX\tex\latex\beamer\beamer.cls
 INPUT C:\Users\elisa\AppData\Local\Programs\MiKTeX\tex\latex\beamer\beamer.cls
