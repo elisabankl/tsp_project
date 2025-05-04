@@ -2,14 +2,13 @@
 
 from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
-
-
+import numpy as np
+from customenv import CustomEnv
 
 def create_data_model():
     """Stores the data for the problem."""
     data = {}
     data["distance_matrix"] = [
-        # fmt: off
       [0, 548, 776, 696, 582, 274, 502, 194, 308, 194, 536, 502, 388, 354, 468, 776, 662],
       [548, 0, 684, 308, 194, 502, 730, 354, 696, 742, 1084, 594, 480, 674, 1016, 868, 1210],
       [776, 684, 0, 992, 878, 502, 74, 810, 468, 742, 400, 1278, 1164, 1130, 788, 1552, 754],
@@ -27,7 +26,6 @@ def create_data_model():
       [468, 1016, 788, 1164, 1050, 514, 514, 662, 320, 274, 388, 650, 536, 342, 0, 764, 194],
       [776, 868, 1552, 560, 674, 1050, 1278, 742, 1084, 810, 1152, 274, 388, 422, 764, 0, 798],
       [662, 1210, 674, 1358, 1244, 708, 480, 856, 514, 468, 354, 844, 730, 536, 194, 798, 0],
-        # fmt: on
     ]
     data["pickups_deliveries"] = [
         [1, 6],
@@ -47,35 +45,40 @@ def create_data_model():
 def print_solution(data, manager, routing, solution):
     """Prints solution on console."""
     print(f"Objective: {solution.ObjectiveValue()}")
-    total_distance = 0
-    for vehicle_id in range(data["num_vehicles"]):
-        if not routing.IsVehicleUsed(solution, vehicle_id):
-            continue
-        index = routing.Start(vehicle_id)
-        plan_output = f"Route for vehicle {vehicle_id}:\n"
-        route_distance = 0
-        while not routing.IsEnd(index):
-            plan_output += f" {manager.IndexToNode(index)} -> "
-            previous_index = index
-            index = solution.Value(routing.NextVar(index))
-            route_distance += routing.GetArcCostForVehicle(
-                previous_index, index, vehicle_id
+    
+    index = routing.Start(0)
+    route_distance = 0
+    plan_output = "Route:\n"
+    while not routing.IsEnd(index):
+        plan_output += f" {manager.IndexToNode(index)} -> "
+        previous_index = index
+        index = solution.Value(routing.NextVar(index))
+        route_distance += routing.GetArcCostForVehicle(
+            previous_index, index, 0
             )
-        plan_output += f"{manager.IndexToNode(index)}\n"
-        plan_output += f"Distance of the route: {route_distance}m\n"
-        print(plan_output)
-        total_distance += route_distance
-    print(f"Total Distance of all routes: {total_distance}m")
+        print(route_distance)
+    plan_output += f"{manager.IndexToNode(index)}\n"
+    plan_output += f"Distance of the route: {route_distance}m\n"
+    print(plan_output)
+    print(f"Total Distance of the route: {route_distance}m")
 
 
-def main():
+def solve_google_or(observation,precedence_matrix):
     """Entry point of the program."""
     # Instantiate the data problem.
     data = create_data_model()
+    data = {}
+    n = len(observation[0])
+    data["distance_matrix"] = np.zeros([n,n])
+    data["distance_matrix"] = observation[:,:,0]
 
+    data["pickups_deliveries"] = [[i,j] for i in range(n) for j in range(n) if precedence_matrix[i][j] == 1]
+
+    print("Distance Matrix:", data["distance_matrix"])
+    print("Precedence Constraints:", data["pickups_deliveries"])
     # Create the routing index manager.
     manager = pywrapcp.RoutingIndexManager(
-        len(data["distance_matrix"]), data["num_vehicles"], data["depot"]
+        len(data["distance_matrix"]), 1, 0
     )
 
     # Create Routing Model.
@@ -98,7 +101,7 @@ def main():
     routing.AddDimension(
         transit_callback_index,
         0,  # no slack
-        30000,  # vehicle maximum travel distance
+        10000000,  # vehicle maximum travel distance
         True,  # start cumul to zero
         dimension_name,
     )
@@ -111,9 +114,6 @@ def main():
         delivery_index = manager.NodeToIndex(request[1])
         routing.AddPickupAndDelivery(pickup_index, delivery_index)
         routing.solver().Add(
-            routing.VehicleVar(pickup_index) == routing.VehicleVar(delivery_index)
-        )
-        routing.solver().Add(
             distance_dimension.CumulVar(pickup_index)
             <= distance_dimension.CumulVar(delivery_index)
         )
@@ -121,7 +121,7 @@ def main():
     # Setting first solution heuristic.
     search_parameters = pywrapcp.DefaultRoutingSearchParameters()
     search_parameters.first_solution_strategy = (
-        routing_enums_pb2.FirstSolutionStrategy.PARALLEL_CHEAPEST_INSERTION
+        routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC
     )
 
     # Solve the problem.
@@ -133,4 +133,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    env = CustomEnv(25,p=0.1)
+    observation, _ = env.reset(fixed_instance=False)
+    precedence_matrix = env.reduced_precedence_matrix
+    solve_google_or(observation,precedence_matrix)

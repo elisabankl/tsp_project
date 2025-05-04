@@ -1,0 +1,41 @@
+\begin{thebibliography}{}
+
+\bibitem[Cirasella et~al., 2001]{atsp}
+Cirasella, J., Johnson, D.~S., McGeoch, L.~A., and Zhang, W. (2001).
+\newblock The asymmetric traveling salesman problem: Algorithms, instance
+  generators, and tests.
+\newblock In Buchsbaum, A.~L. and Snoeyink, J., editors, {\em Algorithm
+  Engineering and Experimentation}, pages 32--59, Berlin, Heidelberg. Springer
+  Berlin Heidelberg.
+
+\bibitem[Helsgaun, 2017]{lkh3}
+Helsgaun, K. (2017).
+\newblock An extension of the lin-kernighan-helsgaun tsp solver for constrained
+  traveling salesman and vehicle routing problems.
+\newblock Technical report, Roskilde University.
+
+\bibitem[Jamal et~al., 2017]{branch_bound_sop}
+Jamal, J., Shobaki, G., Papapanagiotou, V., Gambardella, L., and Montemanni, R.
+  (2017).
+\newblock Solving the sequential ordering problem using branch and bound.
+\newblock In {\em 2017 IEEE Symposium Series on Computational Intelligence
+  (SSCI)}, pages 1--9.
+
+\bibitem[Schoen, 2024]{schoen2024optimization}
+Schoen, F. (2024).
+\newblock {\em Optimization Models}.
+\newblock edito dall'autore.
+
+\bibitem[Schulman et~al.,
+  2017]{schulman2017proximalpolicyoptimizationalgorithms}
+Schulman, J., Wolski, F., Dhariwal, P., Radford, A., and Klimov, O. (2017).
+\newblock Proximal policy optimization algorithms.
+
+\bibitem[Skinderowicz, 2013]{antcolony}
+Skinderowicz, R. (2013).
+\newblock Ant colony system with selective pheromone memory for sop.
+\newblock In B{\v{a}}dic{\v{a}}, C., Nguyen, N.~T., and Brezovan, M., editors,
+  {\em Computational Collective Intelligence. Technologies and Applications},
+  pages 711--720, Berlin, Heidelberg. Springer Berlin Heidelberg.
+
+\end{thebibliography}

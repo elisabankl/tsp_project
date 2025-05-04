@@ -1,4 +1,6 @@
 import numpy as np
+import random
+import math
 
 def generate_distance_matrix(n):
     distance_matrix = np.random.uniform(1, 10, size=(n, n))
@@ -7,14 +9,23 @@ def generate_distance_matrix(n):
         for j in range(n):
             if i != j:
                 distance_matrix[i][j] = max(distance_matrix[i][j], 1)
+    #Floyd-Warshall algorithm to compute the shortest paths, this is to fulfill the triangle inequality
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                if distance_matrix[i][j] > distance_matrix[i][k] + distance_matrix[k][j]: 
+                    distance_matrix[i][j] = distance_matrix[i][k] + distance_matrix[k][j]
+
     return distance_matrix
 
-def generate_precedence_matrix(n):
+def generate_precedence_matrix(n,p = 0.1):
     precedence_matrix = np.zeros((n, n), dtype=int)
     for i in range(n):
         for j in range(i+1, n):
-            if i != j and np.random.rand() < 0.2:  # 20% chance of precedence
+            if i != j and np.random.rand() < p: #math.exp(random.uniform(math.log(0.01),math.log(0.3))):
                 precedence_matrix[i][j] = 1
+
+    reduced_precedence_matrix = precedence_matrix.copy()
 
     # Compute the transitive closure of the precedence matrix
     for i in range(n-2, -1, -1):
@@ -27,15 +38,18 @@ def generate_precedence_matrix(n):
 
     # Apply the permutation to both rows and columns
     precedence_matrix = precedence_matrix[permutation, :][:, permutation]
+    reduced_precedence_matrix = reduced_precedence_matrix[permutation, :][:, permutation]
 
-    return precedence_matrix
+
+
+    return precedence_matrix, reduced_precedence_matrix
 
 def generate_cost_matrix(n):
     cost_matrix = np.diag(np.random.uniform(1, 10, size=(n)))
     return cost_matrix
 
-def generate_matrices(n):
+def generate_matrices(n,p = 0.05):
     distance_matrix = generate_distance_matrix(n)
-    precedence_matrix = generate_precedence_matrix(n)
+    precedence_matrix = generate_precedence_matrix(n,p)
     cost_matrix = generate_cost_matrix(n)
     return distance_matrix, precedence_matrix, cost_matrix

@@ -8,22 +8,19 @@ import networkx as nx
 class CustomEnv(gym.Env):
     "Custom environment for the asymmetric TSP with precedence constraints."
     
-    def __init__(self, N_GRAPH_SIZE):
+    def __init__(self, N_GRAPH_SIZE,p = 0.1):
         super().__init__()
         self.N_GRAPH_SIZE = N_GRAPH_SIZE
-        
+        self.p = p
         # Generate matrices
         self.distance_matrix = generate_distance_matrix(N_GRAPH_SIZE)
-        self.precedence_matrix = generate_precedence_matrix(N_GRAPH_SIZE)
+        self.precedence_matrix, self.reduced_precedence_matrix = generate_precedence_matrix(N_GRAPH_SIZE,p)
         self.cost_matrix = generate_cost_matrix(N_GRAPH_SIZE)
-        self.distance_matrix[np.where(np.transpose(self.precedence_matrix) == 1)] = -1  # Set distance to -1 for precedence constraints
-        np.fill_diagonal(self.distance_matrix,np.diag(self.cost_matrix))  # Prevent visiting the 
         self.original_cost_matrix = np.diag(self.cost_matrix).copy()  # Save the original cost matrix
-        
         # Define action and observation space
         self.action_space = spaces.Discrete(N_GRAPH_SIZE)  # there are N_GRAPH_SIZE possible actions
         self.observation_space = spaces.Box(low=0, high=255,
-                                            shape=(N_GRAPH_SIZE, N_GRAPH_SIZE), dtype=np.uint8)
+                                            shape=(N_GRAPH_SIZE, N_GRAPH_SIZE, 4), dtype=np.uint8)
         
         self.visited_nodes = np.zeros(N_GRAPH_SIZE, dtype=np.uint8)
         self.current_node = None  # No current node at the start
@@ -52,9 +49,10 @@ class CustomEnv(gym.Env):
                 terminated = True
                 truncated = False
             else:
-                np.fill_diagonal(self.distance_matrix, self.distance_matrix[self.current_node, :])
+                np.fill_diagonal(self.cost_matrix, self.distance_matrix[self.current_node, :])  # Prevent visiting the same node again
                 terminated = False
                 truncated = False
+
         self.allowed_actions = [not (self.visited_nodes[i] == 1) and self._check_precedence_constraints(i) for i in range(self.N_GRAPH_SIZE)]
         observation = self._get_observation()
         return observation, reward, terminated, truncated, {}
@@ -63,10 +61,8 @@ class CustomEnv(gym.Env):
         # Regenerate matrices to sample a new problem
         if not fixed_instance:
             self.distance_matrix = generate_distance_matrix(self.N_GRAPH_SIZE)
-            self.precedence_matrix = generate_precedence_matrix(self.N_GRAPH_SIZE)
-            self.distance_matrix[np.where(np.transpose(self.precedence_matrix) == 1)] = -1  # Set distance to -1 for precedence constraints
+            self.precedence_matrix, self.reduced_precedence_matrix = generate_precedence_matrix(self.N_GRAPH_SIZE,self.p)
             self.cost_matrix = generate_cost_matrix(self.N_GRAPH_SIZE)
-            np.fill_diagonal(self.distance_matrix,np.diag(self.cost_matrix))  # Prevent visiting the same node again
             self.original_cost_matrix = np.diag(self.cost_matrix).copy()  # Save the original cost matrix
 
         else:
@@ -118,11 +114,11 @@ class CustomEnv(gym.Env):
 
     def _get_observation(self):
         # Create the observation matrix
-        observation = np.zeros((self.N_GRAPH_SIZE, self.N_GRAPH_SIZE), dtype=np.uint8)
-        observation[:,:] = self.distance_matrix # Distance matrix
-        observation[:,self.visited_nodes==1] = 0  # set the columns about the visited nodes to 0
-        observation[self.visited_nodes==1,:] = 0 #set the rows about the visited nodes to 0
-        #observation[:,:,1] = np.diag(self.visited_nodes)
+        observation = np.zeros((self.N_GRAPH_SIZE, self.N_GRAPH_SIZE, 4), dtype=np.uint8)
+        observation[:, :, 0] = np.where(np.transpose(self.precedence_matrix) ==1,0,self.distance_matrix) #set weights of illegal edges to 0
+        observation[:, :, 1] = self.precedence_matrix
+        observation[:, :, 2] = self.cost_matrix
+        observation[:, :, 3] = self.visited_nodes[:, np.newaxis]  # Add visited nodes as the fourth channel
         return observation
 
     def _check_precedence_constraints(self, action):
