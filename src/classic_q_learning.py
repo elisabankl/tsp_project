@@ -1,4 +1,3 @@
-# Base Data Science snippet
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt

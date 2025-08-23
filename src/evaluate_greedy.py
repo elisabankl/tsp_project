@@ -19,7 +19,7 @@ def greedy_action(env):
     return best_action
 
 # Create the environment
-env = CustomEnv(25)
+env = CustomEnv(25,"Euclidic", normalize_rewards=True, p=0.1)
 
 # Evaluate the greedy algorithm
 obs, _ = env.reset()  # Extract the observation from the tuple
