@@ -102,8 +102,8 @@ class SOPSolver:
             self.container_name,
             "/bin/bash", "-c", 
             f"mkdir -p /app/results && chmod 777 /app/results && "
-            f"./acs --alg=acs --ants=10 --phmem=std --ls=none --beta=2.0 "
-            f"--test=/data/{file_name} --q0=10 --phi=0.01 --rho=0.1 "
+            f"./acs --alg=acs --ants=10 --phmem=std --ls=sop3exchange-sa --beta=2.0 "
+            f"--test=/data/{file_name} --q0=10 --phi=0.01 --rho=0.1 --sa-cooling-ratio=0.9999 --sa-init-accept-prob=0.1 --sop-ls-sa-cooling-ratio=0.99 --sop-ls-sa-init-accept-prob=0.1 "
             f"--cand_list={candidate_list_size} "
             f"--timeout={self.timeout} --trials=1"
         ]

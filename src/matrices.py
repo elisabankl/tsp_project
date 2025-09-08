@@ -253,7 +253,7 @@ def generate_clustered_matrices_with_random_asymmetry(n,k = 4, p = 0.3,asym_prob
     same_cluster = membership[:,np.newaxis] == membership[np.newaxis,:]
     rand_vals = np.random.rand(n,n)
     same_cluster_mask = same_cluster & (rand_vals < p)
-    diff_cluster_mask = ~same_cluster & (rand_vals < p*0.05)
+    diff_cluster_mask = ~same_cluster & (rand_vals < p*0.1)
     precedence_matrix[(same_cluster_mask | diff_cluster_mask)] = 1
     precedence_matrix = np.triu(precedence_matrix,k=1)
 

@@ -112,7 +112,7 @@ def solve_tsp_nearest_neighbor(distance_matrix, precedence_matrix=None):
     # Return the complete tour and its total distance (negative for reward)
     return tour, -total_distance
 
-def solve_tsp_cheapest_insertion(distance_matrix, precedence_matrix=None):
+def solve_tsp_cheapest_insertion(distance_matrix, precedence_matrix=None,cost_matrix = None):
     """
     Solve the TSP problem using the cheapest insertion heuristic.
     
@@ -125,29 +125,28 @@ def solve_tsp_cheapest_insertion(distance_matrix, precedence_matrix=None):
         total_distance: The total distance of the tour
     """
     n = distance_matrix.shape[0]
-    
-    # Start with a valid node considering precedence constraints
-    if precedence_matrix is None:
-        tour = [0]  # Start with node 0
-    else:
-        # Find a node with no predecessors
-        has_predecessors = [False] * n
-        for i in range(n):
-            for j in range(n):
-                if precedence_matrix[j, i] == 1:  # j must come before i
-                    has_predecessors[i] = True
+    if cost_matrix is None:
+        cost_matrix = np.diag(np.zeros(n))
+    tour = []
         
-        # Find nodes with no predecessors
-        start_candidates = [i for i in range(n) if not has_predecessors[i]]
-        if start_candidates:
-            tour = [start_candidates[0]]  # Take the first one
-        else:
-            tour = [0]  # Default if something is wrong with precedence matrix
-    
     # Track visited nodes
     visited = [False] * n
+
+    # Start with a valid node considering precedence constraints
+        # Find a node with no predecessors
+    has_predecessors = [False] * n  # O(n**2)
+    for i in range(n):
+        for j in range(n):
+            if precedence_matrix[j, i] == 1:  # j must come before i
+                has_predecessors[i] = True
+    start_candidates = [i for i in range(n) if not has_predecessors[i]]
+    if start_candidates:
+        tour = [start_candidates[np.argmin(cost_matrix[start_candidates])]]  # Take the first one
+    else:
+        tour = [0]  # Default if something is wrong with precedence matrix
+
     visited[tour[0]] = True
-    
+
     # Main loop: add all remaining nodes
     while len(tour) < n:
         best_node = -1
@@ -171,12 +170,13 @@ def solve_tsp_cheapest_insertion(distance_matrix, precedence_matrix=None):
                         last_pred_in_tour = max(last_pred_in_tour,tour.index(pred))
                 if not can_visit:
                     continue  # Skip if precedence constraints aren't satisfied
+
             
             # Try inserting at each position in the tour
             for pos in range(last_pred_in_tour+1,len(tour) + 1):
                 # For insertion at the beginning
                 if pos == 0:
-                    increase = distance_matrix[node, tour[0]]
+                    increase = cost_matrix[node] +distance_matrix[node, tour[0]] - cost_matrix[tour[0]]
                 # For insertion at the end
                 elif pos == len(tour):
                     increase = distance_matrix[tour[-1], node]
@@ -201,7 +201,7 @@ def solve_tsp_cheapest_insertion(distance_matrix, precedence_matrix=None):
         visited[best_node] = True
     
     # Calculate the total distance of the tour
-    total_distance = 0
+    total_distance = cost_matrix[tour[0]]  # Start with the cost of the first node
     for i in range(len(tour) - 1):
         total_distance += distance_matrix[tour[i], tour[i+1]]
     
