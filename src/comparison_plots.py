@@ -407,7 +407,7 @@ def visualize_summary(
     plt.ylabel("Percentage (%)", fontsize=LABEL_FONTSIZE)
     ax = plt.gca()
     ax.tick_params(axis='both', which='major', labelsize=TICK_FONTSIZE)
-    plt.legend(fontsize=LEGEND_FONTSIZE)
+    #    plt.legend(fontsize=LEGEND_FONTSIZE)
     plt.grid(True)
     plt.ylim(0, 100)
     plt.tight_layout()
@@ -596,7 +596,7 @@ def generate_summary_csv(solvers: list,p_value: float = 0.1, output_csv: str = "
     rows = []
     summary_df.instance_type.replace({"FlowShop": "Flow Shop","StringDistance": "String Dist","Euclidic":"Euclidean","ClusteredWithRandomAsymmetry":"Clusters"}, inplace=True)
     problem_types = sorted(summary_df['instance_type'].dropna().unique())
-    solver_shortname_dict = {"Nearest Neighbor": "NN","Cheapest Insertion": "CI","OR-Tools": "OR","Ant Colony System": "AC"}
+    solver_shortname_dict = {"Nearest Neighbor": "NN","Cheapest Insertion": "CI","OR-Tools": "OR","Ant Colony System": "ACS"}
     summary_df.solver = summary_df.solver.map(solver_shortname_dict).fillna("RL")
     solvers = list(pd.Series(solvers).replace({"NearestNeighbor": "Nearest Neighbor","AntColony":"Ant Colony System"}))
     required = [solver_shortname_dict[s] for s in  solvers if s in solver_shortname_dict]
