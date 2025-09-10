@@ -17,7 +17,7 @@ class SOPSolver:
         try:
             # First check using docker images command instead of inspect
             result = subprocess.run(
-                ["docker", "images", "-q", container_name], 
+                ["docker", "images", "-q", container_name],
                 stdout=subprocess.PIPE, 
                 stderr=subprocess.PIPE,
                 text=True
@@ -226,97 +226,3 @@ class SOPSolver:
                     return dimension
         # Default if not found
         return 25
-
-def main():
-    
-    # Initialize the solver
-    solver = SOPSolver(container_name="acssa-builder", timeout=30)
-    
-    env = CustomEnv(25, "Random", normalize_rewards=True, p=0.01)
-    # Get matrices from the environment
-    distance_matrix = env.distance_matrix
-    precedence_matrix = env.precedence_matrix
-    cost_matrix = env.original_cost_matrix if hasattr(env, 'original_cost_matrix') else None
-
-    # Unnormalize distance matrix if needed (ACS expects integer distances)
-    if hasattr(env, 'max_value'):
-        distance_matrix = distance_matrix * env.max_value
-
-    # Solve using ACS
-    #print("Solving with Ant Colony System...")
-    solution = solver.solve_from_matrices(distance_matrix, precedence_matrix, cost_matrix)
-    
-    # If solution parsing fails, try to read the file directly
-    if solution is None:
-        results_dir = os.path.join(os.getcwd(), "results")
-        json_files = glob.glob(os.path.join(results_dir, "**", "*.js"), recursive=True)
-        
-        if json_files:
-            latest_file = max(json_files, key=os.path.getctime)
-            print(f"Found results file: {latest_file}")
-            
-            # Read and print the raw contents
-            with open(latest_file, 'r') as f:
-                content = f.read()
-                print("Raw JSON content:")
-                print(content)
-            
-            # Try parsing it
-            import json
-            try:
-                solution = json.loads(content)
-            except json.JSONDecodeError:
-                print("Failed to parse JSON")
-    
-    # Process and display the solution
-    if solution:
-        #print("\nSolution found!")
-        
-        # Check which keys are available in the solution
-        #print("Available keys in solution:", solution.keys())
-        
-        # Use the correct key names based on what's available
-        cost_key = 'best_solution_cost'
-        path_key = 'best_solution'
-        time_key = 'execution_time'
-        
-        # Try alternative key names if the expected ones don't exist
-        if 'best_solution_cost' not in solution:
-            if 'cost' in solution:
-                cost_key = 'cost'
-            elif 'best_cost' in solution:
-                cost_key = 'best_cost'
-                
-        if 'best_solution' not in solution:
-            if 'solution' in solution:
-                path_key = 'solution'
-            elif 'best_path' in solution:
-                path_key = 'best_path'
-                
-        if 'execution_time' not in solution:
-            if 'time' in solution:
-                time_key = 'time'
-            elif 'exec_time' in solution:
-                time_key = 'exec_time'
-        
-        # Print the information using the correct keys
-        print(f"Cost: {solution[cost_key]}")
-        print(f"Path: {solution[path_key]}")
-        print(f"Execution time: {solution[time_key] if time_key in solution else 'N/A'}")
-        
-        # Convert 1-indexed solution back to 0-indexed for visualization
-        path = [x-1 for x in solution[path_key]]
-        
-        # Set the environment state to match the solution
-        env.reset()
-        for node in path:
-            env.visited_nodes[node] = True
-            
-        env.actions_taken = path
-        env.current_node = path[-1] if path else None
-        
-        # Visualize the solution
-        env.render()
-
-if __name__ == "__main__":
-    main()
