@@ -465,13 +465,11 @@ def evaluate_multiple_agents(agent_paths, p_values, instance_type="Random", grap
 
 def evaluate_agents(instance_type,agent_paths, ant_solver_enabled=True,or_solver_enabled=True, **instance_kwargs):
     """Main function to evaluate and compare multiple agents."""
-    # List of agent model paths to compare
-    
     
     # Values of p to evaluate
     p_values = [0,0.005, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1,0.125,0.15,0.2,0.3]
     
-    n_instances = 100  # Reduced for testing, increase for production
+    n_instances = 100
     graph_size = 25
     
     # Run evaluation with all agents and solvers
@@ -489,26 +487,12 @@ def evaluate_agents(instance_type,agent_paths, ant_solver_enabled=True,or_solver
     print(f"Evaluation for {instance_type} complete")
 
 if __name__ == "__main__":
-    # Everything is now properly contained in functions
-    # Only the evaluate_agents function is called here
-    agent_paths = [
-        "25_flowshop_masked_ppo_20250628_130538.zip",
-        "25_euclidic_masked_ppo_20250623_021838.zip",
-        "25_random_masked_ppo_20250626_100225.zip",
-        "25_stringdistance_masked_ppo_20250629_130536.zip",  
-        "25_euclidic_masked_ppo_20250623_021838.zip" 
-         ]
-    instance_types = ["FlowShop","Euclidic","Random","StringDistance","ClusteredWithRandomAsymmetry"]
     
-    instance_type = "FlowShop" #instance_types[i]
-    agent_path = ["25_flowshop_masked_ppo_20250628_130538.zip"] #,"25_clusteredwithrandomasymmetry_masked_ppo_20250805_222638.zip"]
-    print(f"Evaluating agent {agent_path} for instance type: {instance_type}")
-    #evaluate_agents(instance_type=instance_type,agent_paths = agent_path, or_solver_enabled=True,ant_solver_enabled=True,profiling_enabled = True, n_jobs=50)
-    #evaluate_agent("25_clusteredwithrandomasymmetry_masked_ppo_20250714_230351",instance_type="ClusteredWithRandomAsymmetry", graph_size=25)
-    #evaluate_agents(instance_type="StringDistance",agent_paths = ["25_stringdistance_masked_ppo_20250629_130536.zip"], or_solver_enabled=True,ant_solver_enabled=True)
-    #evaluate_agents(instance_type="Random",agent_paths = ["25_random_masked_ppo_20250626_100225.zip"], or_solver_enabled=True,ant_solver_enabled=True)
-    #evaluate_agents(instance_type="Euclidic",agent_paths = ["25_euclidic_masked_ppo_20250623_021838.zip"], or_solver_enabled=True,ant_solver_enabled=True)
-    #evaluate_agents(instance_type="ClusteredWithRandomAsymmetry",agent_paths = ["25_euclidic_masked_ppo_20250623_021838.zip"], or_solver_enabled=True,ant_solver_enabled=True)
+    evaluate_agents("25_clusteredwithrandomasymmetry_masked_ppo_20250714_230351",instance_type="ClusteredWithRandomAsymmetry", graph_size=25)
+    evaluate_agents(instance_type="StringDistance",agent_paths = ["25_stringdistance_masked_ppo_20250629_130536.zip"], or_solver_enabled=True,ant_solver_enabled=True)
+    evaluate_agents(instance_type="Random",agent_paths = ["25_random_masked_ppo_20250626_100225.zip"], or_solver_enabled=True,ant_solver_enabled=True)
+    evaluate_agents(instance_type="Euclidic",agent_paths = ["25_euclidic_masked_ppo_20250623_021838.zip"], or_solver_enabled=True,ant_solver_enabled=True)
+    evaluate_agents(instance_type="ClusteredWithRandomAsymmetry",agent_paths = ["25_euclidic_masked_ppo_20250623_021838.zip"], or_solver_enabled=True,ant_solver_enabled=True)
     evaluate_agents(instance_type="FlowShop",agent_paths = ["25_flowshop_masked_ppo_20250628_130538.zip"], or_solver_enabled=True,ant_solver_enabled=True)
 
 
